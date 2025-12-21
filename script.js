@@ -138,4 +138,23 @@ function showExplanation(text) {
   modal.style.display = "flex";
 }
 
+function exportHTML() {
+  let html = `<div class="quiz">\n`;
+
+  quizData.forEach((q, i) => {
+    html += `<div class="quiz-card">\n`;
+    html += `<p>${q.question}</p>\n<ul>\n`;
+    q.choices.forEach(c => {
+      html += `<li>${c}</li>\n`;
+    });
+    html += `</ul>\n</div>\n`;
+  });
+
+  html += `</div>`;
+
+  navigator.clipboard.writeText(html);
+  alert("HTMLをコピーしました");
+}
+
+
 
