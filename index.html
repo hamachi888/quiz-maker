@@ -4,95 +4,8 @@
   <meta charset="UTF-8">
   <title>カード型クイズメーカー</title>
 
-  <!-- =====================
-       全体スタイル（CSS）
-       ===================== -->
-  <style>
-    /* 画面全体の背景（机のイメージ） */
-    body {
-      font-family: system-ui, sans-serif;
-      background: #eef1f4;
-      padding: 40px;
-    }
-
-    /* アプリ本体（紙の束） */
-    .app {
-      max-width: 900px;
-      margin: auto;
-      background: #fff;
-      border-radius: 14px;
-      box-shadow:
-        0 8px 24px rgba(0,0,0,.12),
-        0 2px 0 #e0e0e0;
-      overflow: hidden;
-    }
-
-    /* =====================
-       タブ（インデックス）
-       ===================== */
-    .tabs {
-      display: flex;
-      padding-left: 20px;
-      background: #e6e8eb;
-      border-bottom: 2px solid #cfd3d8;
-    }
-
-    /* タブ共通 */
-    .tab {
-      position: relative;
-      padding: 14px 28px;
-      margin-right: 8px;
-      cursor: pointer;
-      border-radius: 10px 10px 0 0;
-      font-weight: 600;
-      color: #444;
-      top: 8px; /* 少し下げて「差し込み感」 */
-      transition: .2s;
-      user-select: none;
-    }
-
-    /* タブの色分け（紙ラベル感） */
-    .tab.index { background: #ffd6d6; }
-    .tab.make  { background: #d6f0ff; }
-    .tab.help  { background: #e6ffd6; }
-
-    /* 選択中のタブ */
-    .tab.active {
-      background: #fff;
-      color: #000;
-      top: 0; /* 前に出る */
-      box-shadow: 0 -4px 8px rgba(0,0,0,.08);
-    }
-
-    /* =====================
-       ページ切り替え部分
-       ===================== */
-    .page {
-      display: none; /* 初期状態は非表示 */
-      padding: 30px;
-    }
-
-    .page.active {
-      display: block; /* 選択中だけ表示 */
-    }
-
-    /* ボタン（INDEX用） */
-    .btn {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 12px 24px;
-      background: #007acc;
-      color: #fff;
-      border-radius: 10px;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-    }
-
-    .btn:hover {
-      opacity: .9;
-    }
-  </style>
+  <!-- 外部CSS読み込み -->
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -102,11 +15,11 @@
      ===================== -->
 <div class="app">
 
-  <!-- ===== タブ ===== -->
+  <!-- ===== タブ（インデックス） ===== -->
   <div class="tabs">
     <!--
-      data-page の値と
-      下の <div id="〇〇"> を一致させる
+      data-page と
+      下の page の id を一致させる
     -->
     <div class="tab index active" data-page="index">INDEX</div>
     <div class="tab make" data-page="make">MAKE</div>
@@ -119,16 +32,15 @@
 
     <p>
       問題を入力するだけで、<br>
-      カード型の4択クイズを作成できます。
+      カード型4択クイズを作成できます。
     </p>
 
     <ul>
       <li>インストール不要</li>
-      <li>HTMLをコピーしてすぐ使える</li>
-      <li>WordPressにそのまま貼れる</li>
+      <li>HTMLをコピーするだけ</li>
+      <li>WordPress対応</li>
     </ul>
 
-    <!-- MAKEタブへ移動 -->
     <button class="btn" onclick="openTab('make')">
       クイズを作る
     </button>
@@ -138,70 +50,23 @@
   <div id="make" class="page">
     <h2>クイズ作成</h2>
     <p>
-      ここに今後、<br>
-      ・問題入力フォーム<br>
-      ・選択肢入力<br>
-      ・正解設定<br>
-      ・プレビュー<br>
-      を追加していく予定。
-    </p>
-
-    <p style="color:#888;">
-      ※ いま作っているクイズ作成JSを<br>
-      ここに統合していくイメージ
+      ここにクイズ作成フォームを実装予定
     </p>
   </div>
 
   <!-- ===== HELPページ ===== -->
   <div id="help" class="page">
     <h2>使い方</h2>
-
     <ol>
       <li>MAKEタブを開く</li>
-      <li>問題と選択肢を入力</li>
-      <li>生成されたHTMLをコピー</li>
-      <li>WordPressに貼り付け</li>
+      <li>問題を入力</li>
+      <li>HTMLをコピー</li>
     </ol>
   </div>
 
 </div>
 
-<!-- =====================
-     タブ切り替えJS
-     ===================== -->
-<script>
-  /**
-   * 指定されたタブを開く関数
-   * @param {string} name - 表示したいページID
-   */
-  function openTab(name) {
-
-    // すべてのタブの active を外す
-    document.querySelectorAll(".tab").forEach(tab => {
-      tab.classList.remove("active");
-    });
-
-    // すべてのページを非表示にする
-    document.querySelectorAll(".page").forEach(page => {
-      page.classList.remove("active");
-    });
-
-    // クリックされたタブを active に
-    document.querySelector(`[data-page="${name}"]`)
-      .classList.add("active");
-
-    // 対応するページを表示
-    document.getElementById(name)
-      .classList.add("active");
-  }
-
-  // タブクリック時の処理
-  document.querySelectorAll(".tab").forEach(tab => {
-    tab.addEventListener("click", () => {
-      openTab(tab.dataset.page);
-    });
-  });
-</script>
-
+<!-- 外部JS読み込み -->
+<script src="script.js"></script>
 </body>
 </html>
