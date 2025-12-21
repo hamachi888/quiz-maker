@@ -97,3 +97,45 @@ function selectAnswer(qIndex, aIndex, btn) {
   });
 }
 
+/* ===== 採点 ===== */
+function gradeQuiz() {
+  const cards = document.querySelectorAll(".quiz-card");
+
+  cards.forEach((card, i) => {
+    const buttons = card.querySelectorAll(".choice-btn");
+    buttons.forEach((btn, idx) => {
+      btn.disabled = true;
+
+      if (idx == quizData[i].answer) {
+        btn.classList.add("correct");
+      }
+      if (idx == userAnswers[i] && idx != quizData[i].answer) {
+        btn.classList.add("wrong");
+      }
+    });
+
+    // 解説ボタン
+    const expBtn = document.createElement("button");
+    expBtn.className = "btn secondary";
+    expBtn.textContent = "解説を見る";
+    expBtn.onclick = () => showExplanation(quizData[i].explanation);
+
+    card.appendChild(expBtn);
+  });
+}
+
+/* ===== 解説モーダル ===== */
+function showExplanation(text) {
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.innerHTML = `
+    <div class="modal-content">
+      <p>${text}</p>
+      <button class="btn" onclick="this.closest('.modal').remove()">閉じる</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  modal.style.display = "flex";
+}
+
+
