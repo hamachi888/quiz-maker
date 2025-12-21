@@ -32,16 +32,13 @@ document.querySelectorAll(".tab").forEach(tab => {
   });
 });
 
-// クイズデータを保存する配列
 let quizData = [];
+let userAnswers = [];
 
-/**
- * 問題を追加
- */
+/* ===== 問題追加 ===== */
 function addQuestion() {
   const question = document.getElementById("question").value;
-  const choices = Array.from(document.querySelectorAll(".choice"))
-                       .map(c => c.value);
+  const choices = Array.from(document.querySelectorAll(".choice")).map(c => c.value);
   const answer = document.getElementById("answer").value;
   const explanation = document.getElementById("explanation").value;
 
@@ -50,24 +47,19 @@ function addQuestion() {
     return;
   }
 
-  quizData.push({
-    question,
-    choices,
-    answer,
-    explanation
-  });
-
-  alert(`問題を追加しました（現在 ${quizData.length} 問）`);
+  quizData.push({ question, choices, answer, explanation });
+  alert(`問題を追加しました（${quizData.length}問）`);
 }
 
-/**
- * プレビュー表示
- */
+/* ===== プレビュー表示 ===== */
 function showPreview() {
   const preview = document.getElementById("preview");
   preview.innerHTML = "";
+  userAnswers = [];
 
   quizData.forEach((q, i) => {
+    userAnswers[i] = null;
+
     const card = document.createElement("div");
     card.className = "quiz-card";
 
@@ -75,7 +67,7 @@ function showPreview() {
       <h3>Q${i + 1}</h3>
       <p>${q.question}</p>
       ${q.choices.map((c, idx) => `
-        <button class="choice-btn" data-q="${i}" data-a="${idx}">
+        <button class="choice-btn" onclick="selectAnswer(${i}, ${idx}, this)">
           ${c}
         </button>
       `).join("")}
@@ -83,4 +75,25 @@ function showPreview() {
 
     preview.appendChild(card);
   });
+
+  // 採点ボタン追加
+  preview.innerHTML += `<button class="btn" onclick="gradeQuiz()">採点する</button>`;
 }
+
+/* ===== 選択処理 ===== */
+function selectAnswer(qIndex, aIndex, btn) {
+  userAnswers[qIndex] = aIndex;
+
+  // 同じ問題のボタンの選択解除
+  btn.parentElement.querySelectorAll(".choice-btn").forEach(b =>
+    b.classList.remove("selected")
+  );
+
+  btn.classList.add("selected");
+}
+
+
+    preview.appendChild(card);
+  });
+}
+
