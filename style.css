@@ -127,4 +127,35 @@ textarea {
   background: #f7f9fb;
 }
 
+/* ===== クイズカード ===== */
+
+.quiz-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+
+.quiz-card h3 {
+  margin-top: 0;
+}
+
+.choice-btn {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: #f7f9fb;
+  cursor: pointer;
+  text-align: left;
+}
+
+.choice-btn.selected {
+  background: #d6f0ff;
+  border-color: #007acc;
+}
+
 
