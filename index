@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>カード型クイズメーカー</title>
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    background: #f4f6f8;
+    padding: 40px;
+  }
+  .container {
+    max-width: 720px;
+    margin: auto;
+    text-align: center;
+  }
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  .catch {
+    color: #555;
+    margin-bottom: 30px;
+  }
+  .features, .steps {
+    text-align: left;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
+  .btn {
+    display: inline-block;
+    background: #007acc;
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>クイズめ～か～</h1>
+  <p class="catch">
+    誰でもすぐに。<br>
+    クイズを作って、そのまま使える。
+  </p>
+
+  <div class="features">
+    <h2>できること</h2>
+    <ul>
+      <li>問題と選択肢を入力するだけ</li>
+      <li>その場でプレビュー</li>
+      <li>HTMLをコピーしてブログに貼り付け</li>
+    </ul>
+  </div>
+
+  <div class="steps">
+    <h2>使い方</h2>
+    <ol>
+      <li>問題文と選択肢を入力</li>
+      <li>プレビューで確認</li>
+      <li>HTMLをコピーして使う</li>
+    </ol>
+  </div>
+
+  <a class="btn" href="maker.html">▶ クイズを作ってみる</a>
+</div>
+
+</body>
+</html>
