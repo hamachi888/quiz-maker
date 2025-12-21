@@ -1,35 +1,88 @@
+/* =====================
+   全体背景（机）
+   ===================== */
 body {
   font-family: system-ui, sans-serif;
+  background: #eef1f4;
+  padding: 40px;
+}
+
+/* =====================
+   アプリ本体（紙の束）
+   ===================== */
+.app {
   max-width: 900px;
   margin: auto;
-  padding: 20px;
-  background: #f4f6f8;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.12),
+    0 2px 0 #e0e0e0;
+  overflow: hidden;
 }
 
-.question-box {
+/* =====================
+   タブ（ラベル）
+   ===================== */
+.tabs {
+  display: flex;
+  padding-left: 20px;
+  background: #e6e8eb;
+  border-bottom: 2px solid #cfd3d8;
+}
+
+/* タブ共通 */
+.tab {
+  position: relative;
+  padding: 14px 28px;
+  margin-right: 8px;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  font-weight: 600;
+  color: #444;
+  top: 8px;
+  transition: .2s;
+  user-select: none;
+}
+
+/* タブ色（ここを変えると雰囲気変わる） */
+.tab.index { background: #ffd6d6; }
+.tab.make  { background: #d6f0ff; }
+.tab.help  { background: #e6ffd6; }
+
+/* 選択中タブ */
+.tab.active {
   background: #fff;
-  padding: 16px;
+  color: #000;
+  top: 0;
+  box-shadow: 0 -4px 8px rgba(0,0,0,.08);
+}
+
+/* =====================
+   ページ表示制御
+   ===================== */
+.page {
+  display: none;
+  padding: 30px;
+}
+
+.page.active {
+  display: block;
+}
+
+/* =====================
+   ボタン
+   ===================== */
+.btn {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background: #007acc;
+  color: #fff;
   border-radius: 10px;
-  margin-bottom: 16px;
+  border: none;
+  cursor: pointer;
 }
 
-input[type=text] {
-  width: 100%;
-  margin: 6px 0;
-  padding: 8px;
-}
-
-.preview-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 6px 16px rgba(0,0,0,.08);
-}
-
-.choice {
-  border: 2px solid #ddd;
-  padding: 12px;
-  border-radius: 8px;
-  margin-top: 8px;
+.btn:hover {
+  opacity: .9;
 }
