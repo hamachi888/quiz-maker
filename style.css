@@ -1,0 +1,35 @@
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+  background: #f4f6f8;
+}
+
+.question-box {
+  background: #fff;
+  padding: 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+input[type=text] {
+  width: 100%;
+  margin: 6px 0;
+  padding: 8px;
+}
+
+.preview-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.08);
+}
+
+.choice {
+  border: 2px solid #ddd;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 8px;
+}
