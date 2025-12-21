@@ -157,5 +157,35 @@ textarea {
   background: #d6f0ff;
   border-color: #007acc;
 }
+/* ===== 正誤表示 ===== */
+
+.choice-btn.correct {
+  background: #d6ffd6;
+  border-color: #3aa655;
+}
+
+.choice-btn.wrong {
+  background: #ffd6d6;
+  border-color: #d9534f;
+}
+
+/* ===== モーダル ===== */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 500px;
+}
+
 
 
