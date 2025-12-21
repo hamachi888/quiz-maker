@@ -86,3 +86,45 @@ body {
 .btn:hover {
   opacity: .9;
 }
+
+/* ===== クイズ作成UI ===== */
+
+label {
+  display: block;
+  margin-top: 20px;
+  font-weight: 600;
+}
+
+textarea, input[type="text"], select {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+textarea {
+  min-height: 80px;
+}
+
+.choices input {
+  margin-bottom: 8px;
+}
+
+.make-buttons {
+  margin-top: 20px;
+}
+
+.btn.secondary {
+  background: #666;
+}
+
+#preview {
+  margin-top: 30px;
+  padding: 20px;
+  border-radius: 12px;
+  background: #f7f9fb;
+}
+
+
