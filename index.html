@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>カード型クイズメーカー</title>
+  <title>くいずめ～か～</title>
 
   <!-- 外部CSS読み込み -->
   <link rel="stylesheet" href="style.css">
@@ -28,11 +28,11 @@
 
   <!-- ===== INDEXページ ===== -->
   <div id="index" class="page active">
-    <h1>カード型クイズメーカー</h1>
+    <h1>くいずめ～か～</h1>
 
     <p>
       問題を入力するだけで、<br>
-      カード型4択クイズを作成できます。
+      クイズのHTML、CSS、JSが簡単に作成できます。
     </p>
 
     <ul>
@@ -48,11 +48,44 @@
 
   <!-- ===== MAKEページ ===== -->
   <div id="make" class="page">
-    <h2>クイズ作成</h2>
-    <p>
-      ここにクイズ作成フォームを実装予定
-    </p>
+  <h2>ｎ択問題</h2>
+
+  <!-- 問題入力 -->
+  <label>問題文</label>
+  <textarea id="question" placeholder="例：次のうち正しいものは？"></textarea>
+
+  <!-- 選択肢 -->
+  <label>選択肢</label>
+  <div class="choices">
+    <input type="text" placeholder="選択肢1" class="choice">
+    <input type="text" placeholder="選択肢2" class="choice">
+    <input type="text" placeholder="選択肢3" class="choice">
+    <input type="text" placeholder="選択肢4" class="choice">
   </div>
+
+  <!-- 正解選択 -->
+  <label>正解</label>
+  <select id="answer">
+    <option value="0">選択肢1</option>
+    <option value="1">選択肢2</option>
+    <option value="2">選択肢3</option>
+    <option value="3">選択肢4</option>
+  </select>
+
+  <!-- 解説 -->
+  <label>解説</label>
+  <textarea id="explanation" placeholder="なぜこれが正解なのか"></textarea>
+
+  <!-- ボタン -->
+  <div class="make-buttons">
+    <button class="btn" onclick="addQuestion()">問題を追加</button>
+    <button class="btn secondary" onclick="showPreview()">プレビュー</button>
+  </div>
+
+  <!-- プレビュー表示 -->
+  <div id="preview"></div>
+</div>
+
 
   <!-- ===== HELPページ ===== -->
   <div id="help" class="page">
