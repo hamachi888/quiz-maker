@@ -31,3 +31,56 @@ document.querySelectorAll(".tab").forEach(tab => {
     openTab(tab.dataset.page);
   });
 });
+
+// クイズデータを保存する配列
+let quizData = [];
+
+/**
+ * 問題を追加
+ */
+function addQuestion() {
+  const question = document.getElementById("question").value;
+  const choices = Array.from(document.querySelectorAll(".choice"))
+                       .map(c => c.value);
+  const answer = document.getElementById("answer").value;
+  const explanation = document.getElementById("explanation").value;
+
+  if (!question || choices.some(c => !c)) {
+    alert("すべて入力してください");
+    return;
+  }
+
+  quizData.push({
+    question,
+    choices,
+    answer,
+    explanation
+  });
+
+  alert(`問題を追加しました（現在 ${quizData.length} 問）`);
+}
+
+/**
+ * プレビュー表示
+ */
+function showPreview() {
+  const preview = document.getElementById("preview");
+  preview.innerHTML = "";
+
+  quizData.forEach((q, i) => {
+    const card = document.createElement("div");
+    card.className = "quiz-card";
+
+    card.innerHTML = `
+      <h3>Q${i + 1}</h3>
+      <p>${q.question}</p>
+      ${q.choices.map((c, idx) => `
+        <button class="choice-btn" data-q="${i}" data-a="${idx}">
+          ${c}
+        </button>
+      `).join("")}
+    `;
+
+    preview.appendChild(card);
+  });
+}
