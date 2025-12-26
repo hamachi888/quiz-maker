@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>くいずめ～か～</title>
+  <title>WordPressクイズ作成支援ツール</title>
 
   <!-- 外部CSS読み込み -->
   <link rel="stylesheet" href="style.css">
@@ -28,7 +28,7 @@
 
   <!-- ===== INDEXページ ===== -->
   <div id="index" class="page active">
-    <h1>くいずめ～か～</h1>
+    <h1>WordPress<br>クイズ作成支援ツール</h1>
 
     <p>
       問題を入力するだけで、<br>
@@ -48,46 +48,89 @@
 
   <!-- ===== MAKEページ ===== -->
   <div id="make" class="page">
-  <h2>ｎ択問題</h2>
 
-  <!-- 問題入力 -->
-  <label>問題文</label>
-  <textarea id="question" placeholder="例：次のうち正しいものは？"></textarea>
+  <h2>4択クイズ作成</h2>
 
-  <!-- 選択肢 -->
-  <label>選択肢</label>
-  <div class="choices">
-    <input type="text" placeholder="選択肢1" class="choice">
-    <input type="text" placeholder="選択肢2" class="choice">
-    <input type="text" placeholder="選択肢3" class="choice">
-    <input type="text" placeholder="選択肢4" class="choice">
-  </div>
+  <!-- =====================
+       A. 問題を用意する
+       ===================== -->
+  <section class="block">
+    <h3>① 問題を用意する</h3>
 
-  <!-- 正解選択 -->
-  <label>正解</label>
-  <select id="answer">
-    <option value="0">選択肢1</option>
-    <option value="1">選択肢2</option>
-    <option value="2">選択肢3</option>
-    <option value="3">選択肢4</option>
-  </select>
+    <p class="note">
+      Excelでまとめて作成する場合は、
+      <span class="csv-link">
+        <a href="#" onclick="downloadCSVTemplate(); return false;">
+          CSVテンプレートをダウンロード
+        </a>
+      </span>
+      してください。
+    </p>
 
-  <!-- 解説 -->
-  <label>解説</label>
-  <textarea id="explanation" placeholder="なぜこれが正解なのか"></textarea>
 
-  <!-- ボタン -->
-  <div class="make-buttons">
+
+    <div class="csv-import">
+      <input type="file" id="csvFile" accept=".csv">
+      <button class="btn" onclick="importCSV()">CSVを読み込む</button>
+    </div>
+
+    <hr>
+
+    <!-- 問題入力 -->
+    <label>問題文</label>
+    <textarea id="question" placeholder="例：次のうち正しいものは？"></textarea>
+
+    <label>選択肢</label>
+    <div class="choices">
+      <input type="text" placeholder="選択肢1" class="choice">
+      <input type="text" placeholder="選択肢2" class="choice">
+      <input type="text" placeholder="選択肢3" class="choice">
+      <input type="text" placeholder="選択肢4" class="choice">
+    </div>
+
+    <label>正解</label>
+    <select id="answer">
+      <option value="0">選択肢1</option>
+      <option value="1">選択肢2</option>
+      <option value="2">選択肢3</option>
+      <option value="3">選択肢4</option>
+    </select>
+
+    <label>解説（任意）</label>
+    <textarea id="explanation" placeholder="なぜこれが正解なのか"></textarea>
+
     <button class="btn" onclick="addQuestion()">問題を追加</button>
-    <button class="btn secondary" onclick="showPreview()">プレビュー</button>
-  </div>
+  </section>
 
-  <!-- プレビュー表示 -->
-  <div id="preview"></div>
-  <button class="btn" onclick="exportHTML()">HTMLを書き出す</button>
+  <!-- =====================
+       B. 問題一覧
+       ===================== -->
+  <section class="block">
+    <h3>② 作成した問題</h3>
+    <p class="note">
+      内容の確認・編集・削除ができます。
+    </p>
+    <div id="questionList"></div>
+  </section>
+
+  <!-- =====================
+       C. プレビュー・書き出し
+       ===================== -->
+  <section class="block">
+    <h3>③ プレビュー・書き出し</h3>
+
+    <button class="btn secondary" onclick="showPreview()">
+      プレビュー表示
+    </button>
+
+    <div id="preview"></div>
+
+    <button class="btn primary" onclick="exportHTML()">
+      HTMLを書き出す
+    </button>
+  </section>
+
 </div>
-
-
 
 
 

@@ -1,6 +1,6 @@
-/**
+/*************************************************
  * タブ切り替え
- */
+ *************************************************/
 function openTab(name) {
   document.querySelectorAll(".tab").forEach(tab =>
     tab.classList.remove("active")
@@ -17,9 +17,9 @@ document.querySelectorAll(".tab").forEach(tab => {
   tab.addEventListener("click", () => openTab(tab.dataset.page));
 });
 
-/* =========================
-   HTML書き出し用 CSS
-========================= */
+/*************************************************
+ * 書き出しHTML用 CSS
+ *************************************************/
 const EXPORT_CSS = `
 .quiz {
   font-family: sans-serif;
@@ -42,19 +42,10 @@ const EXPORT_CSS = `
   background: #f2f2f2;
   cursor: pointer;
 }
-.choice-btn.selected {
-  background: #cce5ff;
-}
-.choice-btn.correct {
-  background: #b6f2c2;
-}
-.choice-btn.wrong {
-  background: #f5b5b5;
-}
-.btn {
-  margin-top: 12px;
-  padding: 10px 16px;
-}
+.choice-btn.selected { background: #cce5ff; }
+.choice-btn.correct { background: #b6f2c2; }
+.choice-btn.wrong { background: #f5b5b5; }
+.btn { margin-top: 12px; padding: 10px 16px; }
 .modal {
   position: fixed;
   inset: 0;
@@ -70,46 +61,70 @@ const EXPORT_CSS = `
 }
 `;
 
-/* =========================
-   HTML書き出し用 JS
-========================= */
+/*************************************************
+ * 書き出しHTML用 JS（完全独立）
+ *************************************************/
 const EXPORT_JS = `
 let userAnswers = [];
 
 function selectAnswer(qIndex, aIndex, btn) {
   userAnswers[qIndex] = aIndex;
-
-  btn.parentElement.querySelectorAll(".choice-btn").forEach(b =>
-    b.classList.remove("selected")
-  );
+  btn.parentElement.querySelectorAll(".choice-btn")
+    .forEach(b => b.classList.remove("selected"));
   btn.classList.add("selected");
 }
 
 function gradeQuiz() {
-  document.querySelectorAll(".quiz-card").forEach((card, i) => {
-    const answer = card.dataset.answer;
+  const cards = document.querySelectorAll(".quiz-card");
+  let correct = 0;
+
+  cards.forEach((card, i) => {
+    const answer = Number(card.dataset.answer);
     const buttons = card.querySelectorAll(".choice-btn");
 
     buttons.forEach((btn, idx) => {
       btn.disabled = true;
-      if (idx == answer) btn.classList.add("correct");
-      if (idx == userAnswers[i] && idx != answer) btn.classList.add("wrong");
+      if (idx === answer) btn.classList.add("correct");
+      if (idx === userAnswers[i] && idx !== answer) btn.classList.add("wrong");
     });
+
+    if (userAnswers[i] === answer) correct++;
   });
+
+  showResultModal(correct, cards.length);
+}
+
+function showResultModal(correct, total) {
+  const modal = document.createElement("div");
+  modal.className = "modal";
+
+  const message =
+    correct === total ? "満点！🎉" :
+    correct >= total * 0.8 ? "よくできました！" :
+    "復習しよう！";
+
+  modal.innerHTML = \`
+    <div class="modal-content">
+      <h2>結果</h2>
+      <p>\${total}問中 <strong>\${correct}問正解</strong></p>
+      <p>\${message}</p>
+      <button class="btn" onclick="this.closest('.modal').remove()">閉じる</button>
+    </div>
+  \`;
+
+  document.body.appendChild(modal);
 }
 `;
 
-
-
-// =====================
-// クイズデータ
-// =====================
+/*************************************************
+ * エディタ用データ
+ *************************************************/
 let quizData = [];
-let userAnswers = [];
+let editorUserAnswers = [];
 
-/**
+/*************************************************
  * 問題追加
- */
+ *************************************************/
 function addQuestion() {
   const question = document.getElementById("question").value.trim();
   const choices = [...document.querySelectorAll(".choice")].map(c => c.value.trim());
@@ -122,19 +137,19 @@ function addQuestion() {
   }
 
   quizData.push({ question, choices, answer, explanation });
-  alert(`問題を追加しました（${quizData.length}問）`);
+  renderQuestionList();
 }
 
-/**
+/*************************************************
  * プレビュー表示
- */
+ *************************************************/
 function showPreview() {
   const preview = document.getElementById("preview");
   preview.innerHTML = "";
-  userAnswers = [];
+  editorUserAnswers = [];
 
   quizData.forEach((q, i) => {
-    userAnswers[i] = null;
+    editorUserAnswers[i] = null;
 
     const card = document.createElement("div");
     card.className = "quiz-card";
@@ -144,7 +159,7 @@ function showPreview() {
       <p>${q.question}</p>
       ${q.choices.map((c, idx) => `
         <button class="choice-btn"
-          onclick="selectAnswer(${i}, ${idx}, this)">
+          onclick="editorSelectAnswer(${i}, ${idx}, this)">
           ${c}
         </button>
       `).join("")}
@@ -157,72 +172,114 @@ function showPreview() {
     const btn = document.createElement("button");
     btn.className = "btn";
     btn.textContent = "採点する";
-    btn.onclick = gradeQuiz;
+    btn.onclick = editorGradeQuiz;
     preview.appendChild(btn);
   }
 }
 
-/**
- * 回答選択
- */
-function selectAnswer(qIndex, aIndex, btn) {
-  userAnswers[qIndex] = aIndex;
-
-  // 同じ問題内の選択解除
+/*************************************************
+ * エディタ用 回答選択
+ *************************************************/
+function editorSelectAnswer(qIndex, aIndex, btn) {
+  editorUserAnswers[qIndex] = aIndex;
   btn.parentElement.querySelectorAll(".choice-btn")
     .forEach(b => b.classList.remove("selected"));
-
   btn.classList.add("selected");
 }
 
-/**
- * 採点
- */
-function gradeQuiz() {
+/*************************************************
+ * エディタ用 採点
+ *************************************************/
+function editorGradeQuiz() {
+  if (editorUserAnswers.some(a => a === null)) {
+    alert("すべての問題に回答してください");
+    return;
+  }
+
   const cards = document.querySelectorAll(".quiz-card");
+  let correct = 0;
 
   cards.forEach((card, i) => {
     const buttons = card.querySelectorAll(".choice-btn");
 
     buttons.forEach((btn, idx) => {
       btn.disabled = true;
-
-      if (idx === quizData[i].answer) {
-        btn.classList.add("correct");
-      } else if (idx === userAnswers[i]) {
+      if (idx === quizData[i].answer) btn.classList.add("correct");
+      if (idx === editorUserAnswers[i] && idx !== quizData[i].answer)
         btn.classList.add("wrong");
-      }
     });
 
-    // 解説ボタン
-    const expBtn = document.createElement("button");
-    expBtn.className = "btn secondary";
-    expBtn.textContent = "解説を見る";
-    expBtn.onclick = () => showExplanation(quizData[i].explanation);
+    if (editorUserAnswers[i] === quizData[i].answer) correct++;
 
-    card.appendChild(expBtn);
+    if (!card.querySelector(".secondary")) {
+      const expBtn = document.createElement("button");
+      expBtn.className = "btn secondary";
+      expBtn.textContent = "解説を見る";
+      expBtn.onclick = () =>
+        showExplanation(
+          quizData[i],
+          editorUserAnswers[i],
+          editorUserAnswers[i] === quizData[i].answer
+        );
+      card.appendChild(expBtn);
+    }
   });
+
+  editorShowResultModal(correct, quizData.length);
 }
 
-/**
+/*************************************************
  * 解説モーダル
- */
-function showExplanation(text) {
+ *************************************************/
+function showExplanation(q, userAnswer, isCorrect) {
   const modal = document.createElement("div");
   modal.className = "modal";
+
   modal.innerHTML = `
     <div class="modal-content">
-      <p>${text}</p>
+      <h3>${isCorrect ? "正解 🎉" : "不正解 😢"}</h3>
+      <p><strong>正解：</strong>${q.choices[q.answer]}</p>
+      ${
+        userAnswer != null
+          ? `<p><strong>あなたの回答：</strong>${q.choices[userAnswer]}</p>`
+          : ""
+      }
+      <hr>
+      <p>${q.explanation || "解説はありません。"}</p>
       <button class="btn" onclick="this.closest('.modal').remove()">閉じる</button>
     </div>
   `;
+
   document.body.appendChild(modal);
-  modal.style.display = "flex";
 }
 
-/**
- * HTML書き出し（WordPress用）
- */
+/*************************************************
+ * エディタ用 結果モーダル
+ *************************************************/
+function editorShowResultModal(correct, total) {
+  const modal = document.createElement("div");
+  modal.className = "modal";
+
+  const message =
+    correct === total ? "満点！🎉" :
+    correct >= total * 0.8 ? "よくできました！" :
+    "復習しよう！";
+
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h2>結果</h2>
+      <p>${total}問中 <strong>${correct}問正解</strong></p>
+      <p>${message}</p>
+      <button class="btn" onclick="this.closest('.modal').remove()">閉じる</button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+}
+
+/*************************************************
+ * HTML書き出し
+ *************************************************/
 function exportHTML() {
   let html = `
 <!DOCTYPE html>
@@ -230,9 +287,7 @@ function exportHTML() {
 <head>
 <meta charset="UTF-8">
 <title>クイズ</title>
-<style>
-${EXPORT_CSS}
-</style>
+<style>${EXPORT_CSS}</style>
 </head>
 <body>
 
@@ -241,26 +296,23 @@ ${EXPORT_CSS}
 
   quizData.forEach((q, i) => {
     html += `
-  <div class="quiz-card" data-answer="${q.answer}">
-    <h3>Q${i + 1}</h3>
-    <p>${q.question}</p>
-    ${q.choices.map((c, idx) => `
-      <button class="choice-btn" onclick="selectAnswer(${i}, ${idx}, this)">
-        ${c}
-      </button>
-    `).join("")}
-  </div>
+<div class="quiz-card" data-answer="${q.answer}">
+  <h3>Q${i + 1}</h3>
+  <p>${q.question}</p>
+  ${q.choices.map((c, idx) => `
+    <button class="choice-btn" onclick="selectAnswer(${i}, ${idx}, this)">
+      ${c}
+    </button>
+  `).join("")}
+</div>
 `;
   });
 
   html += `
-  <button class="btn" onclick="gradeQuiz()">採点する</button>
+<button class="btn" onclick="gradeQuiz()">採点する</button>
 </div>
 
-<script>
-${EXPORT_JS}
-</script>
-
+<script>${EXPORT_JS}</script>
 </body>
 </html>
 `;
@@ -268,4 +320,3 @@ ${EXPORT_JS}
   navigator.clipboard.writeText(html);
   alert("HTML（CSS・JS込み）をコピーしました！");
 }
-
