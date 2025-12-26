@@ -1,8 +1,12 @@
+console.log("JS loaded");
+
 /**
  * タブを切り替える関数
  * @param {string} name 表示したいページID
  */
 function openTab(name) {
+  console.log("openTab:", name);
+
 
   // すべてのタブの active を外す
   document.querySelectorAll(".tab").forEach(tab => {
@@ -159,6 +163,7 @@ function exportHTML() {
   navigator.clipboard.writeText(html);
   alert("HTMLをコピーしました");
 }
+
 
 
 
