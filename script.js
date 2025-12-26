@@ -17,6 +17,90 @@ document.querySelectorAll(".tab").forEach(tab => {
   tab.addEventListener("click", () => openTab(tab.dataset.page));
 });
 
+/* =========================
+   HTML書き出し用 CSS
+========================= */
+const EXPORT_CSS = `
+.quiz {
+  font-family: sans-serif;
+  max-width: 700px;
+  margin: auto;
+}
+.quiz-card {
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+.choice-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 8px;
+  border: none;
+  background: #f2f2f2;
+  cursor: pointer;
+}
+.choice-btn.selected {
+  background: #cce5ff;
+}
+.choice-btn.correct {
+  background: #b6f2c2;
+}
+.choice-btn.wrong {
+  background: #f5b5b5;
+}
+.btn {
+  margin-top: 12px;
+  padding: 10px 16px;
+}
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+}
+`;
+
+/* =========================
+   HTML書き出し用 JS
+========================= */
+const EXPORT_JS = `
+let userAnswers = [];
+
+function selectAnswer(qIndex, aIndex, btn) {
+  userAnswers[qIndex] = aIndex;
+
+  btn.parentElement.querySelectorAll(".choice-btn").forEach(b =>
+    b.classList.remove("selected")
+  );
+  btn.classList.add("selected");
+}
+
+function gradeQuiz() {
+  document.querySelectorAll(".quiz-card").forEach((card, i) => {
+    const answer = card.dataset.answer;
+    const buttons = card.querySelectorAll(".choice-btn");
+
+    buttons.forEach((btn, idx) => {
+      btn.disabled = true;
+      if (idx == answer) btn.classList.add("correct");
+      if (idx == userAnswers[i] && idx != answer) btn.classList.add("wrong");
+    });
+  });
+}
+`;
+
+
+
 // =====================
 // クイズデータ
 // =====================
@@ -184,3 +268,4 @@ ${EXPORT_JS}
   navigator.clipboard.writeText(html);
   alert("HTML（CSS・JS込み）をコピーしました！");
 }
+
