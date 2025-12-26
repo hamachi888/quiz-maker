@@ -95,12 +95,11 @@ function selectAnswer(qIndex, aIndex, btn) {
   );
 
   btn.classList.add("selected");
+  preview.appendChild(card);
+
+  
 }
 
-
-    preview.appendChild(card);
-  });
-}
 
 /* ===== 採点 ===== */
 function gradeQuiz() {
@@ -160,6 +159,7 @@ function exportHTML() {
   navigator.clipboard.writeText(html);
   alert("HTMLをコピーしました");
 }
+
 
 
 
