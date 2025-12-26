@@ -1,50 +1,36 @@
-console.log("JS loaded");
-
 /**
- * タブを切り替える関数
- * @param {string} name 表示したいページID
+ * タブ切り替え
  */
 function openTab(name) {
-  console.log("openTab:", name);
+  document.querySelectorAll(".tab").forEach(tab =>
+    tab.classList.remove("active")
+  );
+  document.querySelectorAll(".page").forEach(page =>
+    page.classList.remove("active")
+  );
 
-
-  // すべてのタブの active を外す
-  document.querySelectorAll(".tab").forEach(tab => {
-    tab.classList.remove("active");
-  });
-
-  // すべてのページを非表示
-  document.querySelectorAll(".page").forEach(page => {
-    page.classList.remove("active");
-  });
-
-  // 対応するタブをアクティブに
-  document
-    .querySelector(`[data-page="${name}"]`)
-    .classList.add("active");
-
-  // 対応するページを表示
-  document
-    .getElementById(name)
-    .classList.add("active");
+  document.querySelector(`[data-page="${name}"]`).classList.add("active");
+  document.getElementById(name).classList.add("active");
 }
 
-// タブクリック時の処理を登録
 document.querySelectorAll(".tab").forEach(tab => {
-  tab.addEventListener("click", () => {
-    openTab(tab.dataset.page);
-  });
+  tab.addEventListener("click", () => openTab(tab.dataset.page));
 });
 
+// =====================
+// クイズデータ
+// =====================
 let quizData = [];
 let userAnswers = [];
 
-/* ===== 問題追加 ===== */
+/**
+ * 問題追加
+ */
 function addQuestion() {
-  const question = document.getElementById("question").value;
-  const choices = Array.from(document.querySelectorAll(".choice")).map(c => c.value);
-  const answer = document.getElementById("answer").value;
-  const explanation = document.getElementById("explanation").value;
+  const question = document.getElementById("question").value.trim();
+  const choices = [...document.querySelectorAll(".choice")].map(c => c.value.trim());
+  const answer = Number(document.getElementById("answer").value);
+  const explanation = document.getElementById("explanation").value.trim();
 
   if (!question || choices.some(c => !c)) {
     alert("すべて入力してください");
@@ -55,7 +41,9 @@ function addQuestion() {
   alert(`問題を追加しました（${quizData.length}問）`);
 }
 
-/* ===== プレビュー表示 ===== */
+/**
+ * プレビュー表示
+ */
 function showPreview() {
   const preview = document.getElementById("preview");
   preview.innerHTML = "";
@@ -71,7 +59,8 @@ function showPreview() {
       <h3>Q${i + 1}</h3>
       <p>${q.question}</p>
       ${q.choices.map((c, idx) => `
-        <button class="choice-btn" onclick="selectAnswer(${i}, ${idx}, this)">
+        <button class="choice-btn"
+          onclick="selectAnswer(${i}, ${idx}, this)">
           ${c}
         </button>
       `).join("")}
@@ -80,40 +69,43 @@ function showPreview() {
     preview.appendChild(card);
   });
 
-  preview.innerHTML += `<button class="btn" onclick="gradeQuiz()">採点する</button>`;
+  if (quizData.length > 0) {
+    const btn = document.createElement("button");
+    btn.className = "btn";
+    btn.textContent = "採点する";
+    btn.onclick = gradeQuiz;
+    preview.appendChild(btn);
+  }
 }
 
-
-
-/* ===== 選択処理 ===== */
+/**
+ * 回答選択
+ */
 function selectAnswer(qIndex, aIndex, btn) {
   userAnswers[qIndex] = aIndex;
 
-  // 同じ問題のボタンの選択解除
-  btn.parentElement.querySelectorAll(".choice-btn").forEach(b =>
-    b.classList.remove("selected")
-  );
+  // 同じ問題内の選択解除
+  btn.parentElement.querySelectorAll(".choice-btn")
+    .forEach(b => b.classList.remove("selected"));
 
   btn.classList.add("selected");
-  preview.appendChild(card);
-
-  
 }
 
-
-/* ===== 採点 ===== */
+/**
+ * 採点
+ */
 function gradeQuiz() {
   const cards = document.querySelectorAll(".quiz-card");
 
   cards.forEach((card, i) => {
     const buttons = card.querySelectorAll(".choice-btn");
+
     buttons.forEach((btn, idx) => {
       btn.disabled = true;
 
-      if (idx == quizData[i].answer) {
+      if (idx === quizData[i].answer) {
         btn.classList.add("correct");
-      }
-      if (idx == userAnswers[i] && idx != quizData[i].answer) {
+      } else if (idx === userAnswers[i]) {
         btn.classList.add("wrong");
       }
     });
@@ -128,7 +120,9 @@ function gradeQuiz() {
   });
 }
 
-/* ===== 解説モーダル ===== */
+/**
+ * 解説モーダル
+ */
 function showExplanation(text) {
   const modal = document.createElement("div");
   modal.className = "modal";
@@ -142,27 +136,51 @@ function showExplanation(text) {
   modal.style.display = "flex";
 }
 
+/**
+ * HTML書き出し（WordPress用）
+ */
 function exportHTML() {
-  let html = `<div class="quiz">\n`;
+  let html = `
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>クイズ</title>
+<style>
+${EXPORT_CSS}
+</style>
+</head>
+<body>
+
+<div class="quiz">
+`;
 
   quizData.forEach((q, i) => {
-    html += `<div class="quiz-card">\n`;
-    html += `<p>${q.question}</p>\n<ul>\n`;
-    q.choices.forEach(c => {
-      html += `<li>${c}</li>\n`;
-    });
-    html += `</ul>\n</div>\n`;
+    html += `
+  <div class="quiz-card" data-answer="${q.answer}">
+    <h3>Q${i + 1}</h3>
+    <p>${q.question}</p>
+    ${q.choices.map((c, idx) => `
+      <button class="choice-btn" onclick="selectAnswer(${i}, ${idx}, this)">
+        ${c}
+      </button>
+    `).join("")}
+  </div>
+`;
   });
 
-  html += `</div>`;
+  html += `
+  <button class="btn" onclick="gradeQuiz()">採点する</button>
+</div>
+
+<script>
+${EXPORT_JS}
+</script>
+
+</body>
+</html>
+`;
 
   navigator.clipboard.writeText(html);
-  alert("HTMLをコピーしました");
+  alert("HTML（CSS・JS込み）をコピーしました！");
 }
-
-
-
-
-
-
-
