@@ -76,6 +76,10 @@ function showPreview() {
     preview.appendChild(card);
   });
 
+  preview.innerHTML += `<button class="btn" onclick="gradeQuiz()">採点する</button>`;
+}
+
+
   // 採点ボタン追加
   preview.innerHTML += `<button class="btn" onclick="gradeQuiz()">採点する</button>`;
 }
@@ -155,6 +159,7 @@ function exportHTML() {
   navigator.clipboard.writeText(html);
   alert("HTMLをコピーしました");
 }
+
 
 
 
