@@ -84,9 +84,6 @@ function showPreview() {
 }
 
 
-  // 採点ボタン追加
-  preview.innerHTML += `<button class="btn" onclick="gradeQuiz()">採点する</button>`;
-}
 
 /* ===== 選択処理 ===== */
 function selectAnswer(qIndex, aIndex, btn) {
@@ -163,6 +160,7 @@ function exportHTML() {
   navigator.clipboard.writeText(html);
   alert("HTMLをコピーしました");
 }
+
 
 
 
