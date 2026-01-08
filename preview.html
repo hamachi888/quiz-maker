@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>クイズプレビュー</title>
+  
+  <!-- quiz.css を読み込む -->
+  <link rel="stylesheet" href="assets/css/quiz.css">
+</head>
+<body>
+  <!-- 
+    この div の中にクイズが表示されます
+  -->
+  <div id="app">
+    <div class="loading">読み込み中...</div>
+  </div>
+  
+  <!-- =====================================
+       JavaScriptファイルの読み込み
+       ===================================== -->
+  
+  <!-- 1. データファイル -->
+  <script src="assets/js/data.js"></script>
+  
+  <!-- 2. プレビュー制御ファイル -->
+  <script src="assets/js/preview.js"></script>
+  
+  <!-- 3. 初期化スクリプト -->
+  <script>
+    // デバッグ用：各ステップを確認
+    console.log('=== 初期化開始 ===');
+    console.log('1. quizData存在確認:', typeof quizData !== 'undefined');
+    console.log('2. 関数存在確認:', typeof initQuiz !== 'undefined');
+    
+    /**
+     * ページ読み込み完了時に実行
+     */
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('📄 DOMContentLoaded イベント発火');
+      
+      try {
+        // クイズを初期化して開始
+        initQuiz();
+        
+        console.log('✅ クイズ開始成功！');
+        console.log('=== 初期化成功 ===');
+        
+      } catch (error) {
+        console.error('❌ エラー発生:', error);
+        const appElement = document.getElementById('app');
+        if (appElement) {
+          appElement.innerHTML = `
+            <div class="error">
+              <h2>エラーが発生しました</h2>
+              <p>${error.message}</p>
+            </div>
+          `;
+        }
+      }
+    });
+    
+    console.log('=== スクリプト読み込み完了 ===');
+  </script>
+</body>
+</html>

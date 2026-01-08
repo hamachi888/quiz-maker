@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>クイズビルダー</title>
+  
+  <style>
+    /* =====================================
+       リセット＆基本設定
+       ===================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+    
+    /* =====================================
+       3カラムレイアウト
+       ===================================== */
+    .builder-container {
+      display: flex;
+      height: 100vh;
+    }
+    
+    /* 左サイドバー */
+    .sidebar-left {
+      width: 250px;
+      background-color: #2c3e50;
+      color: white;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* 中央エリア */
+    .main-area {
+      flex: 1;
+      background-color: #ecf0f1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* 右サイドバー */
+    .sidebar-right {
+      width: 400px;
+      background-color: #34495e;
+      color: white;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* =====================================
+       左サイドバー
+       ===================================== */
+    .sidebar-header {
+      padding: 20px;
+      background-color: #1a252f;
+      border-bottom: 1px solid #34495e;
+    }
+    
+    .sidebar-header h1 {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+    
+    .sidebar-header .version {
+      font-size: 12px;
+      color: #95a5a6;
+    }
+    
+    .sidebar-tabs {
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      gap: 5px;
+    }
+    
+    .tab-button {
+      padding: 15px;
+      background-color: transparent;
+      border: none;
+      color: white;
+      text-align: left;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    
+    .tab-button:hover {
+      background-color: #34495e;
+    }
+    
+    .tab-button.active {
+      background-color: #3498db;
+    }
+    
+    .tab-button i {
+      margin-right: 10px;
+    }
+    
+    /* =====================================
+       中央エリア
+       ===================================== */
+    .main-header {
+      padding: 20px;
+      background-color: white;
+      border-bottom: 2px solid #bdc3c7;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .main-header h2 {
+      font-size: 24px;
+      color: #2c3e50;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    .btn-primary {
+      background-color: #3498db;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #2980b9;
+    }
+    
+    .btn-success {
+      background-color: #2ecc71;
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background-color: #27ae60;
+    }
+    
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* =====================================
+       右サイドバー（プレビュー）
+       ===================================== */
+    .preview-header {
+      padding: 15px;
+      background-color: #2c3e50;
+      border-bottom: 1px solid #34495e;
+    }
+    
+    .preview-header h3 {
+      font-size: 18px;
+    }
+    
+    .preview-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+    
+    #preview-area {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      min-height: 300px;
+    }
+    
+    /* =====================================
+       プレースホルダー（仮の内容）
+       ===================================== */
+    .placeholder {
+      text-align: center;
+      padding: 60px 20px;
+      color: #7f8c8d;
+    }
+    
+    .placeholder h3 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    
+    .placeholder p {
+      font-size: 14px;
+    }
+    
+    /* =====================================
+       問題リスト
+       ===================================== */
+    .question-items {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .question-item {
+      background: white;
+      border: 2px solid #bdc3c7;
+      border-radius: 8px;
+      padding: 15px;
+      transition: all 0.3s;
+    }
+    
+    .question-item:hover {
+      border-color: #3498db;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .question-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .question-type {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .type-choice {
+      background-color: #3498db;
+      color: white;
+    }
+    
+    .type-text {
+      background-color: #2ecc71;
+      color: white;
+    }
+    
+    .question-id {
+      color: #95a5a6;
+      font-size: 12px;
+    }
+    
+    .question-text {
+      font-size: 16px;
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    
+    .question-actions {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .btn-icon {
+      padding: 8px 12px;
+      background: transparent;
+      border: 1px solid #bdc3c7;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+    
+    .btn-icon:hover:not(:disabled) {
+      background-color: #ecf0f1;
+      border-color: #3498db;
+    }
+    
+    .btn-icon:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    
+    .add-question-area {
+      margin-top: 20px;
+    }
+    
+    .btn-block {
+      width: 100%;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #7f8c8d;
+    }
+    
+    .empty-state h3 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+    
+    .empty-state p {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="builder-container">
+    <!-- =====================================
+         左サイドバー
+         ===================================== -->
+    <aside class="sidebar-left">
+      <div class="sidebar-header">
+        <h1>📝 クイズビルダー</h1>
+        <div class="version">Version 1.0 MVP</div>
+      </div>
+      
+      <nav class="sidebar-tabs">
+        <button class="tab-button active" data-tab="questions">
+          📋 問題管理
+        </button>
+        <button class="tab-button" data-tab="upload">
+          📁 ファイル読み込み
+        </button>
+        <button class="tab-button" data-tab="design">
+          🎨 デザイン設定
+        </button>
+        <button class="tab-button" data-tab="export">
+          📦 書き出し
+        </button>
+      </nav>
+    </aside>
+    
+    <!-- =====================================
+         中央エリア
+         ===================================== -->
+    <main class="main-area">
+      <header class="main-header">
+        <h2 id="current-tab-title">問題管理</h2>
+        <div class="action-buttons">
+          <button class="btn btn-primary" onclick="saveQuiz()">💾 保存</button>
+          <button class="btn btn-success" onclick="previewQuiz()">▶️ プレビュー</button>
+        </div>
+      </header>
+      
+      <div class="main-content">
+        <!-- 問題管理タブ -->
+        <div id="tab-questions" class="tab-content active">
+          <div id="question-list">
+            <!-- ここに問題リストが表示される -->
+          </div>
+        </div>
+        
+        <!-- ファイル読み込みタブ -->
+        <div id="tab-upload" class="tab-content">
+          <div class="placeholder">
+            <h3>📁 ファイル読み込み</h3>
+            <p>CSVファイルから一括で問題を読み込めます</p>
+          </div>
+        </div>
+        
+        <!-- デザイン設定タブ -->
+        <div id="tab-design" class="tab-content">
+          <div class="placeholder">
+            <h3>🎨 デザイン設定</h3>
+            <p>色やフォントをカスタマイズできます</p>
+          </div>
+        </div>
+        
+        <!-- 書き出しタブ -->
+        <div id="tab-export" class="tab-content">
+          <div class="export-section">
+            <h3>📦 WordPress用ファイルの書き出し</h3>
+            <p>作成したクイズをWordPressで使えるファイルとしてダウンロードします。</p>
+            
+            <div class="export-options">
+              <!-- オールインワン版 -->
+              <div class="export-card">
+                <div class="export-card-header">
+                  <h4>⭐ オールインワン版（おすすめ）</h4>
+                  <span class="badge badge-success">初心者向け</span>
+                </div>
+                <p>HTML 1ファイルだけでクイズが動作します。WordPressにコピペするだけでOK！</p>
+                <button class="btn btn-success btn-block" onclick="exportAllInOne()">
+                  📥 オールインワン版をダウンロード
+                </button>
+              </div>
+              
+              <!-- 分離版 -->
+              <div class="export-card">
+                <div class="export-card-header">
+                  <h4>📂 分離版</h4>
+                  <span class="badge badge-info">中級者向け</span>
+                </div>
+                <p>HTML、CSS、JavaScriptを別々に管理したい場合に使用します。</p>
+                <button class="btn btn-primary btn-block" onclick="exportSeparate()">
+                  📥 分離版をダウンロード（3ファイル）
+                </button>
+              </div>
+              
+              <!-- まとめてダウンロード -->
+              <div class="export-card">
+                <div class="export-card-header">
+                  <h4>📦 全パターン</h4>
+                </div>
+                <p>オールインワン版と分離版の両方をまとめてダウンロードします。</p>
+                <button class="btn btn-primary btn-block" onclick="exportAll()">
+                  📥 全パターンをダウンロード（4ファイル）
+                </button>
+              </div>
+            </div>
+            
+            <!-- プレビュー -->
+            <div class="export-preview">
+              <h4>🔍 クイズ情報</h4>
+              <div class="quiz-info">
+                <div class="info-item">
+                  <span class="info-label">タイトル:</span>
+                  <span class="info-value" id="export-title">-</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">問題数:</span>
+                  <span class="info-value" id="export-count">-</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">choice型:</span>
+                  <span class="info-value" id="export-choice-count">-</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">text型:</span>
+                  <span class="info-value" id="export-text-count">-</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    
+    <!-- =====================================
+         右サイドバー（プレビュー）
+         ===================================== -->
+    <aside class="sidebar-right">
+      <div class="preview-header">
+        <h3>👁️ プレビュー</h3>
+      </div>
+      <div class="preview-content">
+        <div id="preview-area">
+          <div class="placeholder">
+            <h3>プレビュー</h3>
+            <p>クイズのプレビューがここに表示されます</p>
+          </div>
+        </div>
+      </div>
+</aside>
+</div>
+
+<!-- =====================================
+     編集モーダル
+     ===================================== -->
+<div id="edit-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modal-title">問題を編集</h2>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    
+    <div class="modal-body">
+      <form id="question-form">
+        <!-- 問題タイプ選択 -->
+        <div class="form-group">
+          <label>問題タイプ</label>
+          <select id="edit-type" onchange="toggleQuestionType()">
+            <option value="choice">4択クイズ</option>
+            <option value="text">テキスト入力</option>
+          </select>
+        </div>
+        
+        <!-- 問題文 -->
+        <div class="form-group">
+          <label>問題文 <span class="required">*</span></label>
+          <textarea id="edit-question" rows="3" placeholder="問題文を入力してください" required></textarea>
+        </div>
+        
+        <!-- choice型の場合の選択肢 -->
+        <div id="choices-area">
+          <div class="form-group">
+            <label>選択肢</label>
+            <div class="choice-inputs">
+              <div class="choice-input-row">
+                <input type="text" id="edit-choice-0" placeholder="選択肢1">
+                <input type="radio" name="correct-answer" value="0">
+              </div>
+              <div class="choice-input-row">
+                <input type="text" id="edit-choice-1" placeholder="選択肢2">
+                <input type="radio" name="correct-answer" value="1">
+              </div>
+              <div class="choice-input-row">
+                <input type="text" id="edit-choice-2" placeholder="選択肢3">
+                <input type="radio" name="correct-answer" value="2">
+              </div>
+              <div class="choice-input-row">
+                <input type="text" id="edit-choice-3" placeholder="選択肢4">
+                <input type="radio" name="correct-answer" value="3">
+              </div>
+            </div>
+            <small>正解の選択肢の横のラジオボタンをチェックしてください</small>
+          </div>
+        </div>
+        
+        <!-- text型の場合の正解 -->
+        <div id="text-answer-area" style="display: none;">
+          <div class="form-group">
+            <label>正解 <span class="required">*</span></label>
+            <input type="text" id="edit-text-answer" placeholder="正解の文字列を入力">
+          </div>
+        </div>
+        
+        <!-- 解説 -->
+        <div class="form-group">
+          <label>解説（任意）</label>
+          <textarea id="edit-explanation" rows="3" placeholder="解説を入力してください（省略可）"></textarea>
+        </div>
+      </form>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn" onclick="closeEditModal()">キャンセル</button>
+      <button class="btn btn-primary" onclick="saveQuestion()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================
+     JavaScript
+     ===================================== -->
+
+<!-- データファイルを読み込む -->
+<script src="assets/js/data.js"></script>
+<script src="assets/js/builder.js"></script>
+<script src="assets/js/export.js"></script>
+
+<script>
+  // =====================================
+  // タブ切り替え機能
+  // =====================================
+  document.querySelectorAll('.tab-button').forEach(button => {
+    button.addEventListener('click', function() {
+      const tabName = this.dataset.tab;
+      
+      // 全てのタブボタンから active を削除
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // クリックされたタブに active を追加
+      this.classList.add('active');
+      
+      // 全てのタブコンテンツを非表示
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // 対応するタブコンテンツを表示
+      document.getElementById('tab-' + tabName).classList.add('active');
+      
+      // ヘッダータイトルを更新
+      const titles = {
+        'questions': '問題管理',
+        'upload': 'ファイル読み込み',
+        'design': 'デザイン設定',
+        'export': '書き出し'
+      };
+      document.getElementById('current-tab-title').textContent = titles[tabName];
+    });
+  });
+  
+  // =====================================
+  // 保存・プレビューボタン
+  // =====================================
+  function saveQuiz() {
+    alert('💾 保存機能は実装中です');
+  }
+  
+  function previewQuiz() {
+    alert('▶️ プレビュー機能は実装中です');
+  }
+  
+  // =====================================
+  // 書き出し機能
+  // =====================================
+  
+  /**
+   * オールインワン版をダウンロード
+   */
+  function exportAllInOne() {
+    console.log('📥 オールインワン版ダウンロード');
+    
+    if (!validateQuizData()) return;
+    
+    try {
+      const html = generateWordPressHTMLWithCSS();
+      downloadFile(html, 'quiz-allinone.html', 'text/html');
+      alert('✅ ダウンロード完了！\n\nquiz-allinone.html をWordPressにコピペしてください。');
+    } catch (error) {
+      console.error('❌ ダウンロードエラー:', error);
+      alert('❌ ダウンロード失敗: ' + error.message);
+    }
+  }
+  
+  /**
+   * 分離版をダウンロード（3ファイル）
+   */
+  function exportSeparate() {
+    console.log('📥 分離版ダウンロード');
+    
+    if (!validateQuizData()) return;
+    
+    try {
+      downloadAllFiles();
+    } catch (error) {
+      console.error('❌ ダウンロードエラー:', error);
+      alert('❌ ダウンロード失敗: ' + error.message);
+    }
+  }
+  
+  /**
+   * 全パターンをダウンロード（4ファイル）
+   */
+  function exportAll() {
+    console.log('📥 全パターンダウンロード');
+    
+    if (!validateQuizData()) return;
+    
+    try {
+      downloadAllFilesWithOptions();
+    } catch (error) {
+      console.error('❌ ダウンロードエラー:', error);
+      alert('❌ ダウンロード失敗: ' + error.message);
+    }
+  }
+  
+  /**
+   * クイズデータのバリデーション
+   */
+  function validateQuizData() {
+    if (!quizData.questions || quizData.questions.length === 0) {
+      alert('⚠️ 問題が1つもありません。\n\n先に問題を追加してください。');
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * 書き出しタブのクイズ情報を更新
+   */
+  function updateExportInfo() {
+    if (!quizData || !quizData.questions) return;
+    
+    const choiceCount = quizData.questions.filter(q => q.type === 'choice').length;
+    const textCount = quizData.questions.filter(q => q.type === 'text').length;
+    
+    const titleElement = document.getElementById('export-title');
+    const countElement = document.getElementById('export-count');
+    const choiceCountElement = document.getElementById('export-choice-count');
+    const textCountElement = document.getElementById('export-text-count');
+    
+    if (titleElement) titleElement.textContent = quizData.meta.title || '（未設定）';
+    if (countElement) countElement.textContent = quizData.questions.length + '問';
+    if (choiceCountElement) choiceCountElement.textContent = choiceCount + '問';
+    if (textCountElement) textCountElement.textContent = textCount + '問';
+  }
+  
+  // =====================================
+  // 初期化
+  // =====================================
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('🎬 ビルダー初期化');
+    
+    // quizDataの確認
+    if (typeof quizData === 'undefined') {
+      console.error('❌ quizDataが読み込まれていません');
+      alert('エラー: data.jsが読み込まれていません');
+      return;
+    }
+    
+    // renderQuestionListの確認
+    if (typeof renderQuestionList === 'undefined') {
+      console.error('❌ renderQuestionListが読み込まれていません');
+      alert('エラー: builder.jsが読み込まれていません');
+      return;
+    }
+    
+    console.log('✅ 必要なファイルが全て読み込まれています');
+    
+    // 問題リストを表示
+    renderQuestionList();
+    
+    // プレビューを更新
+    updatePreview();
+    
+    // 書き出し情報を更新
+    updateExportInfo();
+    
+    console.log('✅ ビルダー初期化完了');
+  });
+</script>
+</body>
+</html>

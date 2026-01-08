@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>書き出し機能テスト</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    .test-container {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 8px;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px 5px;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    #output {
+      margin-top: 20px;
+      padding: 20px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      max-height: 400px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>📦 書き出し機能テスト</h1>
+    <p>ボタンをクリックして、WordPress用のファイルを生成・ダウンロードします。</p>
+    
+    <div style="margin: 20px 0; padding: 15px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px;">
+      <strong>⭐ 新機能：CSS埋め込み版！</strong><br>
+      HTML 1ファイルだけでクイズが動作します。WordPressにコピペするだけ！
+    </div>
+    
+    <div style="margin: 20px 0; padding: 15px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px;">
+      <strong>💡 おすすめの使い方：</strong><br>
+      「📥 全ファイルダウンロード（推奨）」で4ファイルをまとめてダウンロード！
+    </div>
+    
+    <button onclick="testGenerateHTML()">HTML生成テスト</button>
+    <button onclick="testGenerateHTMLWithCSS()" style="background-color: #9b59b6;">HTML生成（CSS埋め込み版）</button>
+    <button onclick="testGenerateCSS()">CSS生成テスト</button>
+    <button onclick="copyToClipboard()">クリップボードにコピー</button>
+    <br><br>
+    <button onclick="downloadAllFiles()" style="background-color: #3498db;">📥 一括ダウンロード（3ファイル）</button>
+    <button onclick="downloadAllFilesWithOptions()" style="background-color: #2ecc71; font-size: 18px; padding: 15px 35px;">⭐ 全ファイルダウンロード（推奨）</button>
+    
+    <div id="output"></div>
+  </div>
+  
+  <!-- JavaScriptファイルの読み込み -->
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/export.js"></script>
+  
+  <script>
+    let generatedHTML = '';
+    let generatedHTMLWithCSS = '';
+    let generatedCSS = '';
+    let currentContent = 'html'; // 'html', 'html-with-css', or 'css'
+    
+    function testGenerateHTML() {
+      console.log('🧪 HTML生成テスト開始');
+      
+      try {
+        generatedHTML = generateWordPressHTML();
+        currentContent = 'html';
+        
+        const outputElement = document.getElementById('output');
+        outputElement.textContent = generatedHTML;
+        
+        console.log('✅ HTML生成成功');
+        console.log('文字数:', generatedHTML.length);
+        alert('✅ HTML生成成功！\n\n文字数: ' + generatedHTML.length + '\n\n下にプレビューが表示されています。');
+        
+      } catch (error) {
+        console.error('❌ エラー:', error);
+        alert('❌ エラー: ' + error.message);
+      }
+    }
+    
+    function testGenerateHTMLWithCSS() {
+      console.log('🧪 CSS埋め込み版HTML生成テスト開始');
+      
+      try {
+        generatedHTMLWithCSS = generateWordPressHTMLWithCSS();
+        currentContent = 'html-with-css';
+        
+        const outputElement = document.getElementById('output');
+        outputElement.textContent = generatedHTMLWithCSS;
+        
+        console.log('✅ CSS埋め込み版HTML生成成功');
+        console.log('文字数:', generatedHTMLWithCSS.length);
+        alert('✅ CSS埋め込み版HTML生成成功！\n\n文字数: ' + generatedHTMLWithCSS.length + '\n\nこのHTML 1ファイルだけでクイズが動作します！\n\n下にプレビューが表示されています。');
+        
+      } catch (error) {
+        console.error('❌ エラー:', error);
+        alert('❌ エラー: ' + error.message);
+      }
+    }
+    
+    async function testGenerateCSS() {
+      console.log('🧪 CSS生成テスト開始');
+      
+      try {
+        generatedCSS = generateWordPressCSS();
+        currentContent = 'css';
+        
+        const outputElement = document.getElementById('output');
+        outputElement.textContent = generatedCSS;
+        
+        console.log('✅ CSS生成成功');
+        console.log('文字数:', generatedCSS.length);
+        alert('✅ CSS生成成功！\n\n文字数: ' + generatedCSS.length + '\n\n下にプレビューが表示されています。');
+        
+      } catch (error) {
+        console.error('❌ エラー:', error);
+        alert('❌ エラー: ' + error.message);
+      }
+    }
+    
+    function copyToClipboard() {
+      let content = '';
+      let contentType = '';
+      
+      if (currentContent === 'html') {
+        if (!generatedHTML) {
+          alert('⚠️ 先に「HTML生成テスト」ボタンをクリックしてください');
+          return;
+        }
+        content = generatedHTML;
+        contentType = 'HTML（通常版）';
+      } else if (currentContent === 'html-with-css') {
+        if (!generatedHTMLWithCSS) {
+          alert('⚠️ 先に「HTML生成（CSS埋め込み版）」ボタンをクリックしてください');
+          return;
+        }
+        content = generatedHTMLWithCSS;
+        contentType = 'HTML（CSS埋め込み版）';
+      } else {
+        if (!generatedCSS) {
+          alert('⚠️ 先に「CSS生成テスト」ボタンをクリックしてください');
+          return;
+        }
+        content = generatedCSS;
+        contentType = 'CSS';
+      }
+      
+      navigator.clipboard.writeText(content).then(() => {
+        alert('✅ ' + contentType + ' をクリップボードにコピーしました！\n\nWordPressに貼り付けてください。');
+      }).catch(err => {
+        alert('❌ コピー失敗: ' + err);
+      });
+    }
+  </script>
+</body>
+</html>

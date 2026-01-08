@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>一覧表示型クイズ - テスト</title>
+  
+  <!-- CSS読み込み -->
+  <link rel="stylesheet" href="assets/css/quiz-list.css">
+</head>
+<body>
+  <div id="app">
+    <div class="loading">読み込み中...</div>
+  </div>
+  
+  <!-- JavaScriptファイル読み込み -->
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/quiz-list.js"></script>
+  
+  <script>
+    // 初期化
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('📄 ページ読み込み完了');
+      
+      // クイズを初期化
+      initQuizList();
+      
+      console.log('✅ 初期化完了');
+    });
+  </script>
+</body>
+</html>
